@@ -1,25 +1,98 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Inbox
-    </ion-title>
+    <!-- <ion-row>
+      <ion-col>
+        <div>
+          <ion-item>
+            <ion-range min="1000" max="2000" step="100" ticks='true' snaps="true" color="secondary">
+              <ion-label slot="start">1000</ion-label>
+              <ion-label slot="end">2000</ion-label>
+            </ion-range>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row> -->
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-item>
+            <ion-label color="primary">Filter via Ram</ion-label>
+            <ion-toggle (ionChange)="checkedRam($event)"></ion-toggle>
+          </ion-item>
+          <div *ngIf="isFilterdForRam">
+            <ion-item *ngFor="let ramItemInfo of ramList">
+              <ion-label>{{ramItemInfo}}</ion-label>
+              <ion-checkbox slot="end" (ionChange)="checkedRam($event,ramItemInfo)" [(ngModel)]="ramItemInfo.isChecked">
+              </ion-checkbox>
+            </ion-item>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-item>
+            <ion-label color="primary">Hard disk type</ion-label>
+            <ion-select #newSelectOne [(ngModel)]="carbrandOne" (ionChange)="onHardDiskChange(carbrandOne)"
+              placeholder="Select One">
+              <ion-select-option [value]="hardDiskInfo" *ngFor="let hardDiskInfo of hardDiskList">{{hardDiskInfo}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-item>
+            <ion-label color="primary">Location</ion-label>
+            <ion-select #newSelect [(ngModel)]="carbrand" (ionChange)="onChange(carbrand)" placeholder="Select One"
+              *ngIf="uniqueLocation && uniqueLocation.length">
+              <ion-select-option [value]="locationItem" *ngFor="let locationItem of uniqueLocation">{{locationItem}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">
-        Inbox
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-list>
-    <app-message *ngFor="let message of getMessages()" [message]="message"></app-message>
-  </ion-list>
+  <div *ngIf="records && records.length">
+    <ion-list *ngFor="let message of records | filter: locationName:ramName:hardDiskName">
+      <ion-item>
+        <ion-label>
+          <h2 text-wrap>{{ message.modelName }}</h2>
+          <ion-row>
+            <ion-col>
+              <h5>Location:</h5>
+              <p>{{message.location}}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>RAM:</h5>
+              <p>{{message.ram}}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Location:</h5>
+              <p>{{message.hdd}}</p>
+            </ion-col>
+          </ion-row>
+        </ion-label>
+        <div item-end>
+          <span class="date">
+            <IonBadge color="light">€ {{ message.price }}</IonBadge>
+          </span>
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
+
 </ion-content>
